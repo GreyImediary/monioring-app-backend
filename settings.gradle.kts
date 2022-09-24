@@ -1,0 +1,1 @@
+rootProject.name = "ru.therapyapp.therapy-monioring-app-backend"
