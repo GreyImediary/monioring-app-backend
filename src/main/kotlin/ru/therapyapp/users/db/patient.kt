@@ -14,7 +14,7 @@ object Patients : IntIdTable() {
     val sex = enumerationByName("sex", 6, Sex::class)
     val phoneNumber = varchar("phone_number", 11)
     val additionalPhoneNumber = varchar("additional_phone_number", 11).nullable()
-    val email = varchar("email", 100)
+    val email = varchar("email", 100).nullable()
     val birthDate = timestamp("birth_date")
     val patientCardNumber = text("patient_card_number")
 }

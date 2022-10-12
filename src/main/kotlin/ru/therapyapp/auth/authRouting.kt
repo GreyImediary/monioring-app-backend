@@ -9,10 +9,10 @@ import io.ktor.server.routing.*
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import ru.therapyapp.base_consts.API_VERSION
 import ru.therapyapp.base_db.dbQuery
-import ru.therapyapp.base_model.ResponseError
+import ru.therapyapp.base_api.ResponseError
 import ru.therapyapp.users.db.*
 import ru.therapyapp.users.model.UserCreationBody
-import ru.therapyapp.users.model.toGetUser
+import ru.therapyapp.users.model.toUser
 
 fun Application.configureAuthRouting() {
     routing {
@@ -23,17 +23,9 @@ fun Application.configureAuthRouting() {
                         UserDAO.find { Users.login eq (call.principal<UserIdPrincipal>()?.name ?: "") }.firstOrNull()
                     }
 
-                    if (user != null) {
-                        if (user.userType == UserType.DOCTOR) {
-                            val doctorData = dbQuery { DoctorDAO.find { Doctors.user eq user.id }.firstOrNull() }
-                            doctorData?.let { call.respond(HttpStatusCode.OK, it) }
-                                ?: call.respond(HttpStatusCode.NotFound, ResponseError("Данные доктора отсутствуют"))
-                        } else if(user.userType == UserType.PATIENT) {
-                            val patientData = dbQuery { PatientDAO.find { Patients.user eq user.id }.firstOrNull() }
-                            patientData?.let { call.respond(HttpStatusCode.OK, it) }
-                                ?: call.respond(HttpStatusCode.NotFound, ResponseError("Данные доктора отсутствуют"))
-                        }
-                    }
+                    user?.let {
+                        call.respond(HttpStatusCode.OK, user.toUser())
+                    } ?: call.respond(HttpStatusCode.NotFound, "Пользователь не найден")
                 } catch (e: ExposedSQLException) {
                     call.respond(HttpStatusCode.BadRequest, ResponseError("Произошла ошибка авторизации, проверьте логин и пароль"))
                 }
@@ -51,10 +43,11 @@ fun Application.configureAuthRouting() {
                     }
                 }
 
-                call.respond(HttpStatusCode.OK, user.toGetUser())
+                call.respond(HttpStatusCode.OK, user.toUser())
             } catch (exception: ExposedSQLException) {
-                exception.contexts
                 call.respond(HttpStatusCode.BadRequest, ResponseError("Пользователь уже существует"))
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.BadRequest, ResponseError("Проверьте введённые данные"))
             }
         }
     }

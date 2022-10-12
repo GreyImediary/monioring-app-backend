@@ -1,4 +1,4 @@
-package ru.therapyapp.base_model
+package ru.therapyapp.base_api
 
 import kotlinx.serialization.Serializable
 

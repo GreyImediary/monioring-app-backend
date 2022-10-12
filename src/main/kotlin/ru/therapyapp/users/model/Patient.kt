@@ -16,7 +16,21 @@ data class Patient(
     val sex: Sex,
     val phoneNumber: String,
     val additionalPhoneNumber: String?,
-    val email: String,
+    val email: String?,
+    val birthDate: String,
+    val patientCardNumber: String,
+)
+
+@Serializable
+data class PatientBodyRequest(
+    val userId: Int,
+    val name: String,
+    val surname: String,
+    val patronymic: String?,
+    val sex: Sex,
+    val phoneNumber: String,
+    val additionalPhoneNumber: String?,
+    val email: String?,
     val birthDate: String,
     val patientCardNumber: String,
 )

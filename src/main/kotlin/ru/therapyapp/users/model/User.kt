@@ -6,6 +6,7 @@ import ru.therapyapp.users.db.UserType
 
 @Serializable
 data class User(
+    val id: Int,
     val login: String,
     val userType: UserType
 )
@@ -17,7 +18,8 @@ data class UserCreationBody(
     val userType: UserType
 )
 
-fun UserDAO.toGetUser() = User(
+fun UserDAO.toUser() = User(
+    id = this.id.value,
     login = this.login,
     userType = this.userType
 )

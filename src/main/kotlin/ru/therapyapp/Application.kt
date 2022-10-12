@@ -11,17 +11,20 @@ import ru.therapyapp.plugins.configureLogs
 import ru.therapyapp.plugins.configureRouting
 import ru.therapyapp.plugins.configureSecurity
 import ru.therapyapp.plugins.configureSerialization
-import ru.therapyapp.users.configureUserRoting
+import ru.therapyapp.users.routings.configureUserRoting
 import ru.therapyapp.users.db.Doctors
+import ru.therapyapp.users.db.DoctorsPatients
 import ru.therapyapp.users.db.Patients
 import ru.therapyapp.users.db.Users
+import ru.therapyapp.users.routings.configureDoctorRouting
+import ru.therapyapp.users.routings.configurePatientRouting
 
 fun main() {
 
     transaction(DatabaseFactory.database) {
-        SchemaUtils.create(Users, Patients, Doctors)
+        SchemaUtils.create(Users, Patients, Doctors, DoctorsPatients)
     }
-    embeddedServer(Netty, port = 8080, host = "127.0.0.1") {
+    embeddedServer(Netty, port = 8080, host = "192.168.0.15") {
         configureAuth()
         configureAuthRouting()
         configureLogs()
@@ -29,5 +32,7 @@ fun main() {
         configureSerialization()
         configureSecurity()
         configureRouting()
+        configureDoctorRouting()
+        configurePatientRouting()
     }.start(wait = true)
 }

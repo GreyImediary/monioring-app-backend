@@ -12,7 +12,7 @@ object Doctors : IntIdTable() {
     val patronymic = varchar("patronymic", 30).nullable()
     val sex = enumerationByName("sex", 6, Sex::class)
     val phoneNumber = varchar("phone_number", 11)
-    val email = varchar("email", 100)
+    val email = varchar("email", 100).nullable()
 }
 
 class DoctorDAO(id: EntityID<Int>) : IntEntity(id) {
