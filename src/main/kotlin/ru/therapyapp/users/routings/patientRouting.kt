@@ -46,16 +46,15 @@ fun Application.configurePatientRouting() {
                 }
             }
 
-            /*get("/{id}") {
+            get {
                 try {
-                    val patient = dbQuery { PatientDAO.findById(call.parameters["id"]?.toInt() ?: -1) }
-                    patient?.let {
-                        call.respond(HttpStatusCode.OK, patient)
-                    }
+                    val patients = dbQuery { PatientDAO.all().map { it.toPatient() } }
+
+                    call.respond(HttpStatusCode.OK, patients)
                 } catch (e: ExposedSQLException) {
-                    call.respond(HttpStatusCode.NotFound, ResponseError("Пациент не найден"))
+                    call.respond(HttpStatusCode.BadRequest, ResponseError("Ошибка во время получения"))
                 }
-            }*/
+            }
 
             get("/{userId}") {
                 val userId = call.parameters["userId"]?.toInt() ?: -1

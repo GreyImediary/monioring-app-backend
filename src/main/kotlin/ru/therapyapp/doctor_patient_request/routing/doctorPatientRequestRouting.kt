@@ -14,7 +14,6 @@ import ru.therapyapp.base_db.dbQuery
 import ru.therapyapp.doctor_patient_request.db.DocPatientRequestStatus
 import ru.therapyapp.doctor_patient_request.db.DoctorPatientRequestDAO
 import ru.therapyapp.doctor_patient_request.db.DoctorPatientRequests
-import ru.therapyapp.doctor_patient_request.model.DoctorPatientRequest
 import ru.therapyapp.doctor_patient_request.model.DoctorPatientRequestCreateBody
 import ru.therapyapp.doctor_patient_request.model.DoctorPatientRequestUpdateBody
 import ru.therapyapp.doctor_patient_request.model.toDoctorPatientRequest
@@ -31,7 +30,7 @@ fun Application.configureDoctorPatientRequestRouting() {
                     val patient = dbQuery { PatientDAO.findById(requestBody.patientId) }
 
                     if (patient != null && doctor != null) {
-                        val isAdded = doctor.patients.find { it.id == patient.id } != null
+                        val isAdded = dbQuery { doctor.patients.find { it.id == patient.id } != null }
                         val isRequested = dbQuery {
                             DoctorPatientRequestDAO.find { DoctorPatientRequests.doctor eq doctor.id and
                                     (DoctorPatientRequests.patient eq patient.id)
@@ -43,20 +42,38 @@ fun Application.configureDoctorPatientRequestRouting() {
                             return@post
                         }
 
-                        val request = dbQuery {
+                        val requests = dbQuery {
                             DoctorPatientRequestDAO.new {
                                 doctorDAO = doctor
                                 patientDAO = patient
                                 status = requestBody.status
                             }.toDoctorPatientRequest()
+
+                            DoctorPatientRequestDAO.all().filter { it.doctorDAO.id == doctor.id }.map { it.toDoctorPatientRequest() }
                         }
 
-                        call.respond(HttpStatusCode.OK, request)
+                        call.respond(HttpStatusCode.OK, requests)
                     } else {
                         call.respond(HttpStatusCode.NotFound, "Не найден пользователь или врач")
                     }
                 } catch (e: ExposedSQLException) {
                     call.respond(HttpStatusCode.BadRequest, ResponseError("Ошибка при формировании заявки"))
+                }
+            }
+
+            delete("/{id}") {
+                try {
+                    val requestId = call.parameters["id"]?.toInt() ?: -1
+
+                    val requests = dbQuery {
+                        DoctorPatientRequestDAO.findById(requestId)?.delete()
+                        DoctorPatientRequestDAO.all().map { it.toDoctorPatientRequest() }
+                    }
+
+                    call.respond(HttpStatusCode.OK, requests)
+
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.BadRequest, "Ошибка при удалении заявки")
                 }
             }
 
@@ -97,20 +114,16 @@ fun Application.configureDoctorPatientRequestRouting() {
                     val request = dbQuery { DoctorPatientRequestDAO.findById(updateBody.id) }
 
                     if (request != null) {
-                        val query = dbQuery {
+                        val requests = dbQuery {
                             request.status = updateBody.status
                             if (updateBody.status == DocPatientRequestStatus.ACCEPTED) {
                                 request.doctorDAO.patients =
                                     SizedCollection(request.doctorDAO.patients.plus(request.patientDAO))
                             }
-                            true
+                            DoctorPatientRequestDAO.all().map { it.toDoctorPatientRequest() }
                         }
 
-                        if (query) {
-                            call.respond(HttpStatusCode.OK)
-                        } else {
-                            call.respond(HttpStatusCode.BadRequest, "Ошибка во время обновления")
-                        }
+                        call.respond(HttpStatusCode.OK, requests)
 
                     } else {
                         call.respond(HttpStatusCode.NotFound, "Заявка не найдена")
