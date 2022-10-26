@@ -11,6 +11,8 @@ import ru.therapyapp.doctor_patient_request.db.DoctorPatientRequests
 import ru.therapyapp.doctor_patient_request.routing.configureDoctorPatientRequestRouting
 import ru.therapyapp.index_basdai.bd.BasdaiIndexes
 import ru.therapyapp.index_basdai.routing.configureBasdaiRouting
+import ru.therapyapp.index_bvas.bd.BvasIndexes
+import ru.therapyapp.index_bvas.routing.configureBvasRouting
 import ru.therapyapp.plugins.configureLogs
 import ru.therapyapp.plugins.configureRouting
 import ru.therapyapp.plugins.configureSecurity
@@ -33,6 +35,7 @@ fun main() {
             DoctorsPatients,
             DoctorPatientRequests,
             BasdaiIndexes,
+            BvasIndexes,
 
         )
     }
@@ -48,5 +51,6 @@ fun main() {
         configurePatientRouting()
         configureDoctorPatientRequestRouting()
         configureBasdaiRouting()
+        configureBvasRouting()
     }.start(wait = true)
 }
