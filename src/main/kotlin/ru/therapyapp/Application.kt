@@ -9,6 +9,8 @@ import ru.therapyapp.auth.configureAuth
 import ru.therapyapp.auth.configureAuthRouting
 import ru.therapyapp.doctor_patient_request.db.DoctorPatientRequests
 import ru.therapyapp.doctor_patient_request.routing.configureDoctorPatientRequestRouting
+import ru.therapyapp.index_basdai.bd.BasdaiIndexes
+import ru.therapyapp.index_basdai.routing.configureBasdaiRouting
 import ru.therapyapp.plugins.configureLogs
 import ru.therapyapp.plugins.configureRouting
 import ru.therapyapp.plugins.configureSecurity
@@ -24,7 +26,15 @@ import ru.therapyapp.users.routings.configurePatientRouting
 fun main() {
 
     transaction(DatabaseFactory.database) {
-        SchemaUtils.create(Users, Patients, Doctors, DoctorsPatients, DoctorPatientRequests)
+        SchemaUtils.create(
+            Users,
+            Patients,
+            Doctors,
+            DoctorsPatients,
+            DoctorPatientRequests,
+            BasdaiIndexes,
+
+        )
     }
     embeddedServer(Netty, port = 8080, host = "192.168.0.15") {
         configureAuth()
@@ -37,5 +47,6 @@ fun main() {
         configureDoctorRouting()
         configurePatientRouting()
         configureDoctorPatientRequestRouting()
+        configureBasdaiRouting()
     }.start(wait = true)
 }
