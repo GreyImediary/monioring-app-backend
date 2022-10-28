@@ -9,6 +9,8 @@ import ru.therapyapp.auth.configureAuth
 import ru.therapyapp.auth.configureAuthRouting
 import ru.therapyapp.doctor_patient_request.db.DoctorPatientRequests
 import ru.therapyapp.doctor_patient_request.routing.configureDoctorPatientRequestRouting
+import ru.therapyapp.index_asdas.db.AsdasIndexes
+import ru.therapyapp.index_asdas.routing.configureAsdasRouting
 import ru.therapyapp.index_basdai.bd.BasdaiIndexes
 import ru.therapyapp.index_basdai.routing.configureBasdaiRouting
 import ru.therapyapp.index_bvas.bd.BvasIndexes
@@ -36,7 +38,7 @@ fun main() {
             DoctorPatientRequests,
             BasdaiIndexes,
             BvasIndexes,
-
+            AsdasIndexes,
         )
     }
     embeddedServer(Netty, port = 8080, host = "192.168.0.15") {
@@ -52,5 +54,6 @@ fun main() {
         configureDoctorPatientRequestRouting()
         configureBasdaiRouting()
         configureBvasRouting()
+        configureAsdasRouting()
     }.start(wait = true)
 }
