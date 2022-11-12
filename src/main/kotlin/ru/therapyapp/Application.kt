@@ -41,7 +41,7 @@ fun main() {
             AsdasIndexes,
         )
     }
-    embeddedServer(Netty, port = 8080, host = "192.168.0.10") {
+    embeddedServer(Netty, port = 8080, host = "192.168.0.14") {
         configureAuth()
         configureAuthRouting()
         configureLogs()
