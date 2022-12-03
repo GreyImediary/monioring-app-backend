@@ -4,9 +4,15 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import questionnaire.db.Options
+import questionnaire.db.Questionnaires
+import questionnaire.db.Questions
+import questionnaire.routing.questionnaireRouting
 import ru.therapyapp.base_db.DatabaseFactory
 import ru.therapyapp.auth.configureAuth
 import ru.therapyapp.auth.configureAuthRouting
+import ru.therapyapp.comments.db.Comments
+import ru.therapyapp.comments.routing.configureCommentRouting
 import ru.therapyapp.doctor_patient_request.db.DoctorPatientRequests
 import ru.therapyapp.doctor_patient_request.routing.configureDoctorPatientRequestRouting
 import ru.therapyapp.index_asdas.db.AsdasIndexes
@@ -39,6 +45,10 @@ fun main() {
             BasdaiIndexes,
             BvasIndexes,
             AsdasIndexes,
+            Comments,
+            Questionnaires,
+            Questions,
+            Options
         )
     }
     embeddedServer(Netty, port = 8080, host = "192.168.0.14") {
@@ -55,5 +65,7 @@ fun main() {
         configureBasdaiRouting()
         configureBvasRouting()
         configureAsdasRouting()
+        configureCommentRouting()
+        questionnaireRouting()
     }.start(wait = true)
 }
