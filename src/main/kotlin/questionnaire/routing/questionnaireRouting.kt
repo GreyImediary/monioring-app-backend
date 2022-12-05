@@ -12,12 +12,13 @@ import questionnaire.db.QuestionnaireDAO
 import questionnaire.model.Questionnaire
 import questionnaire.model.toQuestionnaire
 import ru.therapyapp.base_api.ResponseError
+import ru.therapyapp.base_consts.API_VERSION
 import ru.therapyapp.base_db.dbQuery
 import ru.therapyapp.users.db.PatientDAO
 
 fun Application.questionnaireRouting() {
     routing {
-        route("/questionnaire") {
+        route("$API_VERSION/questionnaire") {
             post {
                 try {
                     val requestBody = call.receive<Questionnaire>()

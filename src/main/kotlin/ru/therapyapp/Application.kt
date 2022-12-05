@@ -8,6 +8,9 @@ import questionnaire.db.Options
 import questionnaire.db.Questionnaires
 import questionnaire.db.Questions
 import questionnaire.routing.questionnaireRouting
+import questionnaire_answered.db.QuestionnairesAnswered
+import questionnaire_answered.db.QuestionsAnswered
+import questionnaire_answered.routing.questionnaireAnsweredRouting
 import ru.therapyapp.base_db.DatabaseFactory
 import ru.therapyapp.auth.configureAuth
 import ru.therapyapp.auth.configureAuthRouting
@@ -48,7 +51,9 @@ fun main() {
             Comments,
             Questionnaires,
             Questions,
-            Options
+            Options,
+            QuestionnairesAnswered,
+            QuestionsAnswered
         )
     }
     embeddedServer(Netty, port = 8080, host = "192.168.0.14") {
@@ -67,5 +72,6 @@ fun main() {
         configureAsdasRouting()
         configureCommentRouting()
         questionnaireRouting()
+        questionnaireAnsweredRouting()
     }.start(wait = true)
 }

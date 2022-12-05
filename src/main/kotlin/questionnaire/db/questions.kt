@@ -20,5 +20,5 @@ class QuestionDAO(id: EntityID<Int>) : IntEntity(id) {
 }
 
 enum class QuestionType {
-    FIELD, CHECKBOXES
+    FIELD, CHECKBOXES, RADIOBUTTONS
 }
