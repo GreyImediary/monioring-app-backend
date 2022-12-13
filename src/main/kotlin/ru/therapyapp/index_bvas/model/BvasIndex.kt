@@ -60,7 +60,7 @@ fun BvasIndexDAO.toBvasIndex() = BvasIndex(
 
 fun toStringBvasQuestion(list: List<BvasIndex.QuestionAnswer>) = list.joinToString(separator = ";") { it.toStringValue() }
 
-private fun BvasIndex.QuestionAnswer.toStringValue() = "$title,$value"
+private fun BvasIndex.QuestionAnswer.toStringValue() = "$title&$value"
 
 private fun toBvasQuestionAnswers(questionAnswersString: String): List<BvasIndex.QuestionAnswer> {
     if (questionAnswersString.isNotBlank()) {
@@ -71,7 +71,8 @@ private fun toBvasQuestionAnswers(questionAnswersString: String): List<BvasIndex
 }
 
 private fun toBvasQuestionAnswer(questionString: String): BvasIndex.QuestionAnswer {
-    val data = questionString.split(",")
+    val data = questionString.split("&")
+    println(data)
     val title = data[0]
     val value = data[1].toInt()
 

@@ -1,4 +1,4 @@
-package questionnaire_answered.db
+package ru.therapyapp.questionnaire_answered.db
 
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass

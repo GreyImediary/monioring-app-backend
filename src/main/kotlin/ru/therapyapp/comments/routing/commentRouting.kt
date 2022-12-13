@@ -29,7 +29,7 @@ fun Application.configureCommentRouting() {
                                 comment = request.comment
                             }
 
-                            CommentDAO.find { Comments.patient eq patientDao.id }.map { it.toComment() }
+                            CommentDAO.find { Comments.patient eq patientDao.id }.map { it.toComment() }.reversed()
                         }
 
                         call.respond(HttpStatusCode.OK, comments)
@@ -43,7 +43,7 @@ fun Application.configureCommentRouting() {
                 val patientId = call.parameters["id"]?.toInt() ?: -1
 
                 try {
-                    val comments = dbQuery { CommentDAO.find { Comments.patient eq patientId }.map { it.toComment() } }
+                    val comments = dbQuery { CommentDAO.find { Comments.patient eq patientId }.map { it.toComment() }.reversed() }
 
                     call.respond(HttpStatusCode.OK, comments)
                 } catch (e: ExposedSQLException) {

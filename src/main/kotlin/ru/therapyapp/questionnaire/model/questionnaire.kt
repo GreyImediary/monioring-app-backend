@@ -1,11 +1,26 @@
-package questionnaire.model
+package ru.therapyapp.questionnaire.model
 
 import kotlinx.serialization.Serializable
-import questionnaire.db.*
+import ru.therapyapp.questionnaire.db.OptionDAO
+import ru.therapyapp.questionnaire.db.QuestionDAO
+import ru.therapyapp.questionnaire.db.QuestionType
+import ru.therapyapp.questionnaire.db.QuestionnaireDAO
+import ru.therapyapp.users.model.Doctor
+import ru.therapyapp.users.model.toDoctor
 
 @Serializable
 data class Questionnaire(
+    val id: Int,
     val name: String,
+    val doctor: Doctor,
+    val forPatientId: Int?,
+    val questions: List<Question>
+)
+
+@Serializable
+data class QuestionnaireRequestBody(
+    val name: String,
+    val doctorId: Int,
     val forPatientId: Int?,
     val questions: List<Question>
 )
@@ -23,7 +38,9 @@ data class Option(
 )
 
 fun QuestionnaireDAO.toQuestionnaire() = Questionnaire(
+    id = this.id.value,
     name = this.name,
+    doctor = this.byDoctor.toDoctor(),
     forPatientId = this.forPatient?.id?.value,
     questions = this.questions.map { it.toQuestion() }
 )

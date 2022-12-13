@@ -1,4 +1,4 @@
-package questionnaire.db
+package ru.therapyapp.questionnaire.db
 
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
@@ -8,7 +8,7 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 object Questions : IntIdTable() {
     val questionnaire = reference("quesionnaire_id", Questionnaires)
     val title = text("title")
-    val type = enumerationByName("type", 10, QuestionType::class)
+    val type = enumerationByName("type", 15, QuestionType::class)
 }
 
 class QuestionDAO(id: EntityID<Int>) : IntEntity(id) {
