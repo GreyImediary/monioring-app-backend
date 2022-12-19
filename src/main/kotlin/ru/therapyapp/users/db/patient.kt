@@ -7,7 +7,6 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.javatime.timestamp
 
 object Patients : IntIdTable() {
-    val user = reference("user", Users)
     val name = varchar("name", 30)
     val surname = varchar("surname", 30)
     val patronymic = varchar("patronymic", 30).nullable()
@@ -21,7 +20,6 @@ object Patients : IntIdTable() {
 
 class PatientDAO(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<PatientDAO>(Patients)
-    var userDAO by UserDAO referencedOn  Patients.user
     var name by Patients.name
     var surname by Patients.surname
     var patronymic by Patients.patronymic

@@ -9,7 +9,6 @@ import ru.therapyapp.users.db.Sex
 @Serializable
 data class Patient(
     val id: Int,
-    val userId: Int,
     val name: String,
     val surname: String,
     val patronymic: String?,
@@ -23,7 +22,6 @@ data class Patient(
 
 @Serializable
 data class PatientBodyRequest(
-    val userId: Int,
     val name: String,
     val surname: String,
     val patronymic: String?,
@@ -37,7 +35,6 @@ data class PatientBodyRequest(
 
 fun PatientDAO.toPatient() = Patient(
     id = this.id.value,
-    userId = this.userDAO.id.value,
     name = this.name,
     surname = this.surname,
     patronymic = this.patronymic,

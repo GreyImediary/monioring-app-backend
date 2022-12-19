@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 
 
 object DatabaseFactory {
-    var database: Database = Database.connect("jdbc:postgresql://localhost:5432/test", driver = "org.postgresql.Driver",
+    var database: Database = Database.connect("jdbc:postgresql://localhost:5432/oneapp", driver = "org.postgresql.Driver",
         user = "postgres", password = "postpost")
 
 }
