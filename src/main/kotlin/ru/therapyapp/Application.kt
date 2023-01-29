@@ -56,7 +56,7 @@ fun main() {
             QuestionsAnswered
         )
     }
-    embeddedServer(Netty, port = 8080, host = "192.168.0.14") {
+    embeddedServer(Netty, port = 8080) {
         configureAuth()
         configureAuthRouting()
         configureLogs()
