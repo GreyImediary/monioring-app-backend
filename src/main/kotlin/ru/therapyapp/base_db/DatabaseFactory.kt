@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 
 
 object DatabaseFactory {
-    var database: Database = Database.connect("jdbc:postgresql://db:5432/test?user=postgres", driver = "org.postgresql.Driver")
+    var database: Database = Database.connect("jdbc:postgresql://db:5432/monitoringapp?user=postgres", driver = "org.postgresql.Driver")
 }
 suspend fun <T> dbQuery(block: suspend () -> T): T =
     newSuspendedTransaction(Dispatchers.IO, DatabaseFactory.database) { block() }
