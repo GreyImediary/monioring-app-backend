@@ -13,7 +13,9 @@ import ru.therapyapp.comments.db.CommentDAO
 import ru.therapyapp.comments.db.Comments
 import ru.therapyapp.comments.model.CommentRequestBody
 import ru.therapyapp.comments.model.toComment
+import ru.therapyapp.users.db.DoctorDAO
 import ru.therapyapp.users.db.PatientDAO
+import java.time.Instant
 
 fun Application.configureCommentRouting() {
     routing {
@@ -22,18 +24,24 @@ fun Application.configureCommentRouting() {
                 try {
                     val request = call.receive<CommentRequestBody>()
                     val patient = dbQuery { PatientDAO.findById(request.patientId) }
-                    patient?.let { patientDao ->
+                    val doctor = dbQuery { DoctorDAO.findById(request.doctorId) }
+
+                    if (patient != null && doctor != null) {
                         val comments = dbQuery {
                             CommentDAO.new {
                                 patientDAO = patient
+                                doctorDAO = doctor
                                 comment = request.comment
+                                date = Instant.parse(request.date)
                             }
 
-                            CommentDAO.find { Comments.patient eq patientDao.id }.map { it.toComment() }.reversed()
+                            CommentDAO.find { Comments.patient eq patient.id }.map { it.toComment() }.reversed()
                         }
 
                         call.respond(HttpStatusCode.OK, comments)
-                    } ?: call.respond(HttpStatusCode.NotFound, "Пользователь не найден")
+                    } else {
+                        call.respond(HttpStatusCode.NotFound, "Пользователь не найден")
+                    }
                 } catch (e: ExposedSQLException) {
                     call.respond(HttpStatusCode.BadRequest, ResponseError("Ошибка при записи комментария"))
                 }

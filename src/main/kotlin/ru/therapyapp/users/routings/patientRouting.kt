@@ -7,13 +7,11 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.SizedCollection
+import org.jetbrains.exposed.sql.and
 import ru.therapyapp.base_consts.API_VERSION
 import ru.therapyapp.base_db.dbQuery
 import ru.therapyapp.base_api.ResponseError
-import ru.therapyapp.users.db.DoctorDAO
-import ru.therapyapp.users.db.PatientDAO
-import ru.therapyapp.users.db.Patients
-import ru.therapyapp.users.db.UserDAO
+import ru.therapyapp.users.db.*
 import ru.therapyapp.users.model.PatientBodyRequest
 import ru.therapyapp.users.model.toPatient
 import java.time.Instant
@@ -26,6 +24,8 @@ fun Application.configurePatientRouting() {
                     val request = call.receive<PatientBodyRequest>()
 
                     val patient = dbQuery {
+                        val mkb = MkbDAO.find { (MKBs.code eq request.mkb.code) and  (MKBs.name eq request.mkb.name) }.firstOrNull()
+
                         PatientDAO.new {
                             name = request.name
                             surname = request.surname
@@ -36,6 +36,10 @@ fun Application.configurePatientRouting() {
                             email = request.email
                             birthDate = Instant.parse(request.birthDate)
                             patientCardNumber = request.patientCardNumber
+                            mkbDAO = mkb ?: MkbDAO.new {
+                                name = request.mkb.name
+                                code = request.mkb.code
+                            }
                         }.toPatient()
                     }
 
@@ -52,6 +56,7 @@ fun Application.configurePatientRouting() {
                     val request = call.receive<PatientBodyRequest>()
 
                     val patient = dbQuery {
+                        val mkb = MkbDAO.find { (MKBs.code eq request.mkb.code) and  (MKBs.name eq request.mkb.name) }.firstOrNull()
                         PatientDAO.new {
                             name = request.name
                             surname = request.surname
@@ -62,6 +67,10 @@ fun Application.configurePatientRouting() {
                             email = request.email
                             birthDate = Instant.parse(request.birthDate)
                             patientCardNumber = request.patientCardNumber
+                            mkbDAO = mkb ?: MkbDAO.new {
+                                name = request.mkb.name
+                                code = request.mkb.code
+                            }
                         }
                     }
 
@@ -74,9 +83,11 @@ fun Application.configurePatientRouting() {
                         }
                     }
 
-                    call.respond(HttpStatusCode.OK, patient.toPatient())
+                    val modelPatient = dbQuery { patient.toPatient() }
+
+                    call.respond(HttpStatusCode.OK, modelPatient)
                 } catch (e: ExposedSQLException) {
-                    call.respond(HttpStatusCode.BadRequest, ResponseError("Пользователь не найден"))
+                    call.respond(HttpStatusCode.BadRequest, ResponseError("Ошибка при добавлении пользователя"))
                 }
             }
 

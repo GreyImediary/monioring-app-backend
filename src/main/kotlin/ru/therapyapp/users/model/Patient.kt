@@ -3,6 +3,7 @@ package ru.therapyapp.users.model
 import kotlinx.serialization.Serializable
 import ru.therapyapp.base_db.dbQuery
 import ru.therapyapp.users.db.DoctorDAO
+import ru.therapyapp.users.db.MkbDAO
 import ru.therapyapp.users.db.PatientDAO
 import ru.therapyapp.users.db.Sex
 
@@ -18,6 +19,13 @@ data class Patient(
     val email: String?,
     val birthDate: String,
     val patientCardNumber: String,
+    val mkb: Mkb,
+)
+
+@Serializable
+data class Mkb(
+    val name: String,
+    val code: String
 )
 
 @Serializable
@@ -31,6 +39,7 @@ data class PatientBodyRequest(
     val email: String?,
     val birthDate: String,
     val patientCardNumber: String,
+    val mkb: Mkb,
 )
 
 fun PatientDAO.toPatient() = Patient(
@@ -44,4 +53,10 @@ fun PatientDAO.toPatient() = Patient(
     email = this.email,
     birthDate = this.birthDate.toString(),
     patientCardNumber = this.patientCardNumber,
+    mkb = mkbDAO.toMkb()
+)
+
+fun MkbDAO.toMkb() = Mkb(
+    name = this.name,
+    code = this.code
 )

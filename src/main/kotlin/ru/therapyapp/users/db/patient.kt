@@ -16,6 +16,7 @@ object Patients : IntIdTable() {
     val email = varchar("email", 100).nullable()
     val birthDate = timestamp("birth_date")
     val patientCardNumber = text("patient_card_number")
+    val mkb = reference("mkb", MKBs)
 }
 
 class PatientDAO(id: EntityID<Int>) : IntEntity(id) {
@@ -29,4 +30,5 @@ class PatientDAO(id: EntityID<Int>) : IntEntity(id) {
     var email by Patients.email
     var birthDate by Patients.birthDate
     var patientCardNumber by Patients.patientCardNumber
+    var mkbDAO by MkbDAO referencedOn Patients.mkb
 }

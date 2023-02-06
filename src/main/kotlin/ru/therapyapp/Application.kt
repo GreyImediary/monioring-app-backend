@@ -28,12 +28,10 @@ import ru.therapyapp.plugins.configureLogs
 import ru.therapyapp.plugins.configureRouting
 import ru.therapyapp.plugins.configureSecurity
 import ru.therapyapp.plugins.configureSerialization
+import ru.therapyapp.users.db.*
 import ru.therapyapp.users.routings.configureUserRoting
-import ru.therapyapp.users.db.Doctors
-import ru.therapyapp.users.db.DoctorsPatients
-import ru.therapyapp.users.db.Patients
-import ru.therapyapp.users.db.Users
 import ru.therapyapp.users.routings.configureDoctorRouting
+import ru.therapyapp.users.routings.configureMkbRouting
 import ru.therapyapp.users.routings.configurePatientRouting
 
 fun main() {
@@ -53,7 +51,8 @@ fun main() {
             Questions,
             Options,
             QuestionnairesAnswered,
-            QuestionsAnswered
+            QuestionsAnswered,
+            MKBs
         )
     }
     embeddedServer(Netty, port = 8080) {
@@ -73,5 +72,6 @@ fun main() {
         configureCommentRouting()
         questionnaireRouting()
         questionnaireAnsweredRouting()
+        configureMkbRouting()
     }.start(wait = true)
 }
