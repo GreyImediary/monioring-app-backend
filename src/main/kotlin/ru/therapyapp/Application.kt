@@ -24,6 +24,8 @@ import ru.therapyapp.index_basdai.bd.BasdaiIndexes
 import ru.therapyapp.index_basdai.routing.configureBasdaiRouting
 import ru.therapyapp.index_bvas.bd.BvasIndexes
 import ru.therapyapp.index_bvas.routing.configureBvasRouting
+import ru.therapyapp.index_selena_sledai.db.SelenaSledaiIndexes
+import ru.therapyapp.index_selena_sledai.routing.configureSelenaSledaiRouting
 import ru.therapyapp.plugins.configureLogs
 import ru.therapyapp.plugins.configureRouting
 import ru.therapyapp.plugins.configureSecurity
@@ -52,7 +54,8 @@ fun main() {
             Options,
             QuestionnairesAnswered,
             QuestionsAnswered,
-            MKBs
+            MKBs,
+            SelenaSledaiIndexes
         )
     }
     embeddedServer(Netty, port = 8080) {
@@ -73,5 +76,6 @@ fun main() {
         questionnaireRouting()
         questionnaireAnsweredRouting()
         configureMkbRouting()
+        configureSelenaSledaiRouting()
     }.start(wait = true)
 }

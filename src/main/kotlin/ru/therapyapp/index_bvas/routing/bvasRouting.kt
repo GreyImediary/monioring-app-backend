@@ -25,14 +25,11 @@ fun Application.configureBvasRouting() {
                     val request = call.receive<BvasRequestBody>()
                     val patient = dbQuery { PatientDAO.findById(request.patientId) }
                     patient?.let {
-                        println("AAAAAAAAAAAAAAAAAAAA")
                         val bvasIndex = dbQuery {
-                            println("AAAAAAAAAAAAAAAAAAAA 2")
 
                             println(it.id.value.toString())
                             println(request.toString())
 
-                            println("AAAAAAAAAAAAAAAAAAAA 3")
                             BvasIndexDAO.new {
                                 patientDAO = it
                                 question1 = toStringBvasQuestion(request.question1)
@@ -49,7 +46,6 @@ fun Application.configureBvasRouting() {
                             }.toBvasIndex()
                         }
 
-                        println("AAAAAAAAAAAAAAAAAAAA 4")
                         call.respond(HttpStatusCode.OK, bvasIndex)
                     } ?: call.respond(HttpStatusCode.BadRequest, "Пациент не найден")
                 } catch (e: ExposedSQLException) {
